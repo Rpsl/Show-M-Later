@@ -1,25 +1,63 @@
-// Тут можно редактировать
+/**
+ * Set unread
+ * @type {Boolean}
+ */
+var MARK_UNREAD     = true;
 
-var MARK_UNREAD = true; // Отмечать письмо как не прочитанное true|false
-var MARK_STARRED = false; // Отмечать звездой
-var SEND_LOG = 'im.vitman@gmail.com'; // Если указано, то туда будут слаться отчеты. Полезно при дебаге и для убеждения что скрипт работает
+/**
+ * Set stared
+ * @type {Boolean}
+ */
+var MARK_STARRED    = false;
+
+/**
+ * Send log email to this email.
+ * False for disable.
+ * @type {String}
+ */
+var SEND_LOG        = false;
 
 
-// Тут не желатально редактировать
-var labels = ["Отложить", "Отложить/Нa 6 часов", "Отложить/На 1 день", "Отложить/На 2 дня"];
-var labels_int = [0, 0.25, 1, 2];
+/**
+ * Labels block.
+ * Depends on : var labels_int
+ * @type {Array}
+ */
+// var labels   = ["Later", "Guys", "Please", "Write", "Translation"];
+var labels      = ["Отложить", "Отложить/Нa 6 часов", "Отложить/На 1 день", "Отложить/На 2 дня"];
+
+/**
+ * Day factor: 0.25*1 = 6 hours, 1*1 = 1 day.
+ * Depends on : var labels
+ * @type {Array}
+ */
+var labels_int  = [0, 0.25, 1, 2];
 
 
-// Далее не стоит редактировать
-var messages = {};
-var db = ScriptDb.getMyDb();
-var counter = 0;
+/**
+ * Run it for install labels
+ */
+function setup()
+{
+    for (i = 0; i < labels.length; i++)
+    {
+        GmailApp.createLabel(labels[i]);
+    }
+}
+
+// Don't modify
+var messages    = {};
+var db          = ScriptDb.getMyDb();
+var counter     = 0;
 
 function run()
 {
     var i;
 
-    counter = getData('counter');
+    // каунтер в нашем случае, это примитивные часы. начинается с 1, плюсуется до 24
+    // потом обнуляется.
+    // @todo проверить, что у нас действительно 24 часа, а не 23 или 25
+    counter = getData('counter', false);
 
     if ( counter == false )
     {
@@ -27,10 +65,11 @@ function run()
         counter = 1;
     }
 
+    // проходим по нашим лейблам и добавляем письма в стек
     for (i = 0; i < labels.length; i++)
     {
-        var label = GmailApp.getUserLabelByName(labels[i]);
-        var mess = label.getThreads();
+        var label   = GmailApp.getUserLabelByName(labels[i]);
+        var mess    = label.getThreads();
 
         if (mess.length > 0)
         {
@@ -125,14 +164,13 @@ function moveMessages(label_int, mess)
 }
 
 
-function setup()
-{
-    for (i = 0; i < labels.length; i++)
-    {
-        GmailApp.createLabel(labels[i]);
-    }
-}
-
+/**
+ * Get data from Db.
+ *
+ * @param {String} key
+ * @param {Boolean} raw - return raw object or key value?
+ * @return {*}
+ */
 function getData( key, raw )
 {
     raw = raw || false;
@@ -148,14 +186,23 @@ function getData( key, raw )
     return false;
 }
 
+/**
+ * Add data to Db
+ *
+ * @param {String} key
+ * @param {String} value
+ */
 function setData( key, value )
 {
     removeData( key );
     var object = { key: key, value: value };
     db.save( object )
-
 }
 
+/**
+ * Remove data from Db
+ * @param {String} key
+ */
 function removeData( key )
 {
     var obj = getData( key, true );
