@@ -13,7 +13,7 @@ var MARK_STARRED = false;
 /**
  * Send log email to this email.
  * False for disable.
- * @type {String}
+ * @type {Boolean}
  */
 var SEND_LOG = false;
 
@@ -39,7 +39,7 @@ var labels_int = [0, 0.25, 1, 2];
  */
 function setup()
 {
-    for( i = 0; i < labels.length; i++ )
+    for( var i = 0; i < labels.length; i++ )
     {
         GmailApp.createLabel( labels[i] );
     }
@@ -115,20 +115,19 @@ function moveMessages( label_int, mess )
         }
 
         messages[key] = check - 1;
-        delete check, key;
     }
 
     // Logger.log( messages );
 
     // перебираем все треды из стэка и перемещаем их при необходимости
-    for( var k in messages )
+    for( var key in messages )
     {
-        var inbox = false;
-        var temp_msg = GmailApp.getThreadById( k );
+        var inbox    = false;
+        var temp_msg = GmailApp.getThreadById( key );
 
         // Logger.log( labels[label_int] );
 
-        if ( labels[label_int - 1] === undefined || messages[k] <= 0 )
+        if ( labels[label_int - 1] === undefined || messages[key] <= 0 )
         {
             Logger.log( 'inbox' );
 
@@ -147,23 +146,23 @@ function moveMessages( label_int, mess )
 
 
             oldLabel.removeFromThread( temp_msg );
-            removeData( k );
+            removeData( key );
             inbox = true;
 
         }
-        else if ( messages[k] <= ( labels_int[label_int - 1] * 24 ) )
+        else if ( messages[key] <= ( labels_int[label_int - 1] * 24 ) )
         {
             GmailApp.getUserLabelByName( labels[ label_int ] ).removeFromThread( temp_msg );
             GmailApp.getUserLabelByName( labels[ label_int - 1 ] ).addToThread( temp_msg );
 
             Logger.log( 'msg: %s, %s', temp_msg.getId(), temp_msg.getFirstMessageSubject() );
-            Logger.log( 'count: %s, move_count: %s (%s)', messages[k], ( labels_int[label_int - 1] * 24 ), labels[label_int] );
+            Logger.log( 'count: %s, move_count: %s (%s)', messages[key], ( labels_int[label_int - 1] * 24 ), labels[label_int] );
             Logger.log( 'need move to - %s', labels[ label_int - 1 ] );
         }
 
         if ( !inbox )
         {
-            setData( k, messages[k] );
+            setData( key, messages[key] );
         }
     }
 }
@@ -180,7 +179,7 @@ function getData( key, raw )
 {
     raw = raw || false;
 
-    result = db.query( { key:key } );
+    var result = db.query( { key:key } );
 
     while ( result.hasNext() )
     {
