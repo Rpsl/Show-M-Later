@@ -46,9 +46,9 @@ function setup()
 }
 
 // Don't modify
-var messages = {};
-var db = ScriptDb.getMyDb();
-var counter = 0;
+var messages    = {};
+var db          = ScriptDb.getMyDb();
+var counter     = 0;
 
 function run()
 {
