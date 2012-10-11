@@ -24,7 +24,8 @@ var SEND_LOG = false;
  * @type {Array}
  */
 // var labels   = ["Later", "Guys", "Please", "Write", "Translation"];
-var labels = ["Отложить", "Отложить/Нa 6 часов", "Отложить/На 1 день", "Отложить/На 2 дня"];
+//var labels = ["Отложить", "Отложить/Нa 6 часов", "Отложить/На 1 день", "Отложить/На 2 дня"];
+var labels = ["Delay", "Delay/6 Hours", "Delay/1 day", "Delay/2 days"];
 
 /**
  * Day factor: 0.25*1 = 6 hours, 1*1 = 1 day.
