@@ -26,7 +26,7 @@ var SEND_LOG = false;
 // var labels   = ["Later", "Guys", "Please", "Write", "Translation"];
 
 // English
-//var labels = ["Delay", "Delay/6 Hours", "Delay/1 day", "Delay/2 days"];
+//var labels = ["Postpone", "Postpone/6 Hours", "Postpone/1 day", "Postpone/2 days"];
 
 // Deutsch
 //var labels = ["Aufschieben", "Aufschieben/um 6 Stunden", "Aufschieben/um 1 Tag", "Aufschieben/um 2 Tage"];
