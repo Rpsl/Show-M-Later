@@ -15,7 +15,7 @@ var MARK_STARRED = false;
  * False for disable.
  * @type {Boolean}
  */
-var SEND_LOG = false;
+var SEND_LOG = false; // 'my@email.com';
 
 
 /**
@@ -55,7 +55,7 @@ function setup()
 
 // Don't modify
 var messages = {};
-var db = ScriptDb.getMyDb();
+var db = PropertiesService.getUserProperties();
 var counter = 0;
 
 function run()
@@ -125,8 +125,6 @@ function moveMessages( label_int, mess )
         messages[key] = check - 1;
     }
 
-    // Logger.log( messages );
-
     // перебираем все треды из стэка и перемещаем их при необходимости
     for( var key in messages )
     {
@@ -187,21 +185,13 @@ function getData( key, raw )
 {
     raw = raw || false;
 
-    var result = db.query( { key:key } );
+    var obj = db.getProperty(key);
 
-    while ( result.hasNext() )
+    if( obj !== null )
     {
-        var ob = result.next();
-
-        if ( raw )
-        {
-            return ob;
-        } else
-        {
-            return ob.value;
-        }
+        return obj;
     }
-
+    
     return false;
 }
 
@@ -214,8 +204,8 @@ function getData( key, raw )
 function setData( key, value )
 {
     removeData( key );
-    var object = { key:key, value:value };
-    db.save( object )
+    db.setProperty(key, value);
+
 }
 
 /**
@@ -224,13 +214,6 @@ function setData( key, value )
  */
 function removeData( key )
 {
-    var obj = getData( key, true );
-
-    if ( obj !== false )
-    {
-        db.remove( obj );
-    }
+    db.deleteProperty(key)
 }
-
-
 
