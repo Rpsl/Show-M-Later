@@ -85,6 +85,7 @@ function run()
             // для упрощения кода вынес в отдельную ф-цию
             moveMessages( i, mess );
         }
+        Utilities.sleep(100);
     }
 
     if ( SEND_LOG )
